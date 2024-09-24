@@ -7,7 +7,14 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <img src="{{ url_for('static', filename='images/vishanthiCloudLogo.png') }}" width="300" height="80">
+    <header>
+      <div class="row">
+        <div class="logo-row">
+          <img src="{{ url_for('static', filename='images/cloudLogo.png') }}" alt="logo" class="logo">
+        </div>
+      </div>
+    </header>
+    
     <h2 style="text-align: center;"> Vishanti Cloud : VPC Creation</h2>
 
     <!-- Check if a flash message exists -->
