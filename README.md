@@ -5,9 +5,6 @@ Forms used for demo written in HTML with python backend
 ```
 ├── api.py
 ├── app.py
-├── __pycache__
-│   ├── api.cpython-310.pyc
-│   └── api.cpython-312.pyc
 ├── README.md
 ├── static
 │   ├── css
