@@ -26,16 +26,16 @@ def submit_vpc_form():
     print(f"CPU:{cpu}, RAM:{ram}")
     print(f"Storage (in GB): {storage_in_gb}")
 
-    json_data = {"customer_name":customer_name, 
+    json_data = {"customer_name":customer_name,
                  "vpc_name": vpc_name,
                  "cpu": cpu, "ram": ram,
                  "storage":storage_in_gb}
-    
+
     parsed_data = json.dumps(json_data)
-    
+
     thread = threading.Thread(target=api.create_vpc, args=(parsed_data,))
     thread.start()
-    
+
     #Pop up msg
     flash('VPC creation data submitted successfully!!')
 
@@ -55,7 +55,7 @@ def submit_form():
     vm_name = request.form.get('vmName')
     os = request.form.get('os')
     flavour = request.form.get('flavour')
-    
+
     flavour_option = request.form['flavourOption']
 
     # Determine if the user selected a pre-defined or custom flavour
@@ -66,8 +66,8 @@ def submit_form():
         cpu = request.form['cpu']
         ram = request.form['ram']
         flavour = None
-    
-    
+
+
     storage_in_gb = request.form.get('storageInGb')
 
     # For now, just print the form data to the console
@@ -79,15 +79,15 @@ def submit_form():
     print(f"CPU:{cpu}, RAM:{ram}")
     print(f"Storage (in GB): {storage_in_gb}")
 
-    json_data = {"customer_name":customer_name, "vpc_name":vpc_name, "vm_name":vm_name, 
+    json_data = {"customer_name":customer_name, "vpc_name":vpc_name, "vm_name":vm_name,
                  "os":os, "flavour":flavour, "cpu": cpu, "ram": ram,
                  "storage":storage_in_gb}
-    
+
     parsed_data = json.dumps(json_data)
-    
+
     thread = threading.Thread(target=api.create_vm, args=(parsed_data,))
     thread.start()
-    
+
     #Pop up msg
     flash('VM creation data submitted successfully!!')
 
@@ -103,24 +103,34 @@ def pod_creation_form():
 def submit_pod_form():
     customer_name = request.form.get('customerName')
     vpc_name = request.form.get('vpcName')
-    manifest_url = request.form.get('manifestUrl')
+
+    manifestInputType = request.form.get('manifestInputType')
+    if manifestInputType == 'url':
+        manifest_url = request.form.get('manifestUrl')
+        manifestYaml = None
+    else:
+        manifestYaml = request.form.get('yamlContent')
+        manifest_url = None
 
     # Process the form data here (e.g., save to a database)
     print(f"Customer Name: {customer_name}")
     print(f"VPC Name: {vpc_name}")
-    print(f"Manifest URL: {manifest_url}")
+    print(f"Manifest Type: {manifestInputType}")
+    print(f"URL: {manifest_url}")
+    print(f"YAML: {manifestYaml}")
 
-    json_data = {"customer_name":customer_name, "vpc_name":vpc_name, "manifest_url":manifest_url}
-    
+    json_data = {"customer_name":customer_name, "vpc_name":vpc_name, "manifestInputType":manifestInputType,
+                 "manifest_url":manifest_url, "manifestYaml":manifestYaml }
+
     parsed_data = json.dumps(json_data)
-    
+
     thread = threading.Thread(target=api.create_pod, args=(parsed_data,))
     thread.start()
-   
+
     flash('Pod creation data submitted successfully!!')
 
     # Redirect back to the form or to another page
-    return redirect(url_for('pod_creation_form')) 
+    return redirect(url_for('pod_creation_form'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5500, debug=True)

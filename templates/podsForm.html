@@ -5,18 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vishanthi Cloud - Create POD</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        function toggleInputs() {
+            const urlInput = document.getElementById('manifestUrlContainer');
+            const yamlInput = document.getElementById('yamlContentContainer');
+            const manifestUrl = document.getElementById('manifestUrl');
+            if (document.getElementById('urlOption').checked) {
+                urlInput.style.display = 'block';
+                yamlInput.style.display = 'none';
+                manifestUrl.setAttribute('required', 'required');  // Set required for URL
+            } else {
+                urlInput.style.display = 'none';
+                yamlInput.style.display = 'block';
+                manifestUrl.removeAttribute('required');  // Remove required for URL
+            }
+        }
+    </script>
 </head>
 <body>
     <header>
-      <div class="row">
-        <div class="logo-row">
-          <img src="{{ url_for('static', filename='images/cloudLogo.png') }}" alt="logo" class="logo">
+        <div class="row">
+            <div class="logo-row">
+                <img src="{{ url_for('static', filename='images/cloudLogo.png') }}" alt="logo" class="logo">
+            </div>
         </div>
-      </div>
     </header>
-    <h2 style="text-align: center;">Vishanti Cloud : POD Creation</h2>
-    
-    <!-- Check if a flash message exists -->
+
+    <h2 style="text-align: center;">Vishanti Cloud: POD Creation</h2>
+
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <script>
@@ -26,17 +42,44 @@
     {% endwith %}
 
     <form action="/submit-pod" method="POST">
-        <label for="customerName">Customer Name:</label>
-        <input type="text" id="customerName" name="customerName" required><br><br>
+        <div class="manifest-section">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" name="customerName" required><br><br>
+        </div>
 
-        <label for="vpcName">VPC Name:</label>
-        <input type="text" id="vpcName" name="vpcName" required><br><br>
+        <div class="manifest-section">
+            <label for="vpcName">VPC Name:</label>
+            <input type="text" id="vpcName" name="vpcName" required><br><br>
+        </div>
 
-        <label for="manifestUrl">Manifest URL:</label>
-        <input type="url" id="manifestUrl" name="manifestUrl" required><br><br>
+        <div class="manifest-section">
+            <label>Manifest Input Type:</label><br>
+            <div class="manifest-subsection">
+                <input type="radio" id="urlOption" name="manifestInputType" value="url" onclick="toggleInputs()" checked>
+                <label for="urlOption">URL</label><br>
+                <input type="radio" id="yamlOption" name="manifestInputType" value="yaml" onclick="toggleInputs()">
+                <label for="yamlOption">YAML Content</label><br><br>
+            </div>
 
-        <button type="submit">Submit</button>
+            <div id="manifestUrlContainer">
+                <label for="manifestUrl">URL:</label>
+                <input type="url" id="manifestUrl" name="manifestUrl" required><br><br>
+            </div>
 
+            <div id="yamlContentContainer" style="display: none;">
+                <label for="yamlContent">YAML Content:</label><br>
+                <textarea id="yamlContent" name="yamlContent" rows="15" cols="80" style="overflow-y: auto;"></textarea><br><br>
+            </div>
+        </div>
+
+        <div class="manifest-section">
+            <button type="submit">Submit</button>
+        </div>
     </form>
+
+    <script>
+        // Initialize the visibility of inputs based on the default checked option
+        toggleInputs();
+    </script>
 </body>
 </html>

@@ -24,7 +24,12 @@ form {
 
 /* Form section styling */
 .form-section {
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 label {
@@ -44,6 +49,14 @@ select {
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
+}
+
+.manifest-section {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Flavour section styling */
@@ -102,7 +115,6 @@ header img {
     max-width: 100%; /* Responsive design */
     height: auto; /* Maintain aspect ratio */
 }
-
 
 .logo-row {
     /*width: 250px; */
