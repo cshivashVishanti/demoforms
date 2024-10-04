@@ -81,13 +81,14 @@ def create_pod(data):
     json_data = json.loads(data)
     print("<create_pod>: Customer Name ", json_data["customer_name"])
 
+    fileName = "/tmp/orch_pod_creation.yaml"
     if json_data["manifestInputType"] == "yaml" :
-        yaml_data = yaml.safe_load(json_data["manifestYaml"])
-        print(yaml_data)
-
-        fileName = "/tmp/orch_pod_creation.yaml"
+        yaml_data = yaml.safe_load_all(json_data["manifestYaml"])
         with open(fileName, 'w+') as yamlfile:
-            yaml.dump(yaml_data, yamlfile)
+            for doc in yaml_data:
+                yaml.dump(doc, yamlfile)
+                fileSeperator = '---\n'
+                yamlfile.write(fileSeperator)
 
         os.system(f"kubectl apply -f {fileName}")
     else:
