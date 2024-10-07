@@ -2,6 +2,9 @@ import json
 import os
 from jinja2 import Environment, FileSystemLoader
 import yaml
+import requests
+
+import config.variables as configVar
 
 def get_flavour_data(flavour):
     if flavour == "mini" :
@@ -52,7 +55,6 @@ def create_vm(data):
     os.system(f"kubectl apply -f {fileName}")
 
 
-
 def create_vpc(data):
     context = json.loads(data)
     print(f"<create_vpc>: Received data : {data}")
@@ -93,3 +95,41 @@ def create_pod(data):
         os.system(f"kubectl apply -f {fileName}")
     else:
         os.system(f"kubectl apply -f {json_data['manifest_url']}")
+
+
+def vpn_handler(action, data):
+    print(f"<vpn_handler>: Received data : {data}")
+    json_data = json.loads(data)
+    print("<vpn_handler>: action ", action)
+    print("<vpn_handler>: vpn_name ", json_data["vpn_name"])
+    
+    # Set up Jinja2 environment
+    env = Environment(loader=FileSystemLoader('templates'))
+    # Load the template
+    if action == "add":
+        print("<vpn_handler>: local_ip ", json_data["local_ip"])
+        template = env.get_template('site2siteVPNAdd.j2')
+        
+    sonic_device = configVar.sonic_ip + ':' + configVar.sonic_port
+    
+    api_url = configVar.sonic_ipsec_url.replace("%%sonic_device%%", sonic_device)
+    print(api_url)
+
+
+    if action == "add":
+        config_context = template.render(json_data)
+        data = json.loads(config_context.replace("\'","\""))
+        print(data)
+        
+        # os.system(f"curl -k -X PATCH {config_content}")
+        response = requests.patch(api_url, json=data, verify=False)
+
+    else:
+        # os.system(f"curl -k -X DELETE {config_content}")
+        api_url = api_url+ "=" +json_data["vpn_name"]
+        print(api_url)
+        response = requests.delete(api_url, verify=False)
+
+    print(response.json())
+    
+    

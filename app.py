@@ -132,5 +132,42 @@ def submit_pod_form():
     # Redirect back to the form or to another page
     return redirect(url_for('pod_creation_form'))
 
+@app.route('/vpn')
+def vpn_form():
+    return render_template('vpn.html')
+
+@app.route('/submit-vpn', methods=['POST'])
+def submit_vpn_form():
+    action = request.form.get('action', 'add')
+    
+    if action == 'add':
+        vpn_name = request.form.get('vpn_name')
+        vpn_params = {
+            'vpn_name': vpn_name,
+            'local_ip': request.form.get('local_ip'),
+            'local_subnet': request.form.get('local_subnet'),
+            'remote_ip': request.form.get('remote_ip'),
+            'remote_subnet': request.form.get('remote_subnet'),
+            'auth_method': request.form.get('auth_method'),
+            'pre_shared_key': request.form.get('pre_shared_key'),
+            'esp_proposal': request.form.get('esp_proposal'),
+        }
+        flash("VPN configuration added successfully!")
+    elif action == 'delete':
+        vpn_name = request.form.get('delete_vpn_name')
+        vpn_params = {
+            'vpn_name': vpn_name,
+        }
+        flash("VPN configuration deleted successfully!")
+    
+    parsed_data = json.dumps(vpn_params)
+
+    thread = threading.Thread(target=api.vpn_handler, args=(action, parsed_data,))
+    thread.start()
+    
+    return redirect(url_for('vpn_form'))
+
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5500, debug=True)

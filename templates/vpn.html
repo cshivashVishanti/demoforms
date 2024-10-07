@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site-to-Site VPN</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        function toggleForm(action) {
+            const addSection = document.getElementById('add-section');
+            const deleteSection = document.getElementById('delete-section');
+            const deleteInput = document.getElementById('delete_vpn_name');
+            const addVpnNameInput = document.getElementById('vpn_name');
+            const localIpInput = document.getElementById('local_ip');
+            const localSubnetInput = document.getElementById('local_subnet');
+            const remoteIpInput = document.getElementById('remote_ip');
+            const remoteSubnetInput = document.getElementById('remote_subnet');
+            const authMethodInput = document.getElementById('auth_method');
+            const preSharedKeyInput = document.getElementById('pre_shared_key');
+            const espProposalInput = document.getElementById('esp_proposal');
+
+            if (action === 'add') {
+                addSection.style.display = 'block';
+                deleteSection.style.display = 'none';
+                deleteInput.removeAttribute('required');  // Remove required from delete
+                addVpnNameInput.setAttribute('required', '');  // Add required to add section
+                localIpInput.setAttribute('required', '');  
+                localSubnetInput.setAttribute('required', '');  
+                remoteIpInput.setAttribute('required', '');  
+                remoteSubnetInput.setAttribute('required', '');  
+                authMethodInput.setAttribute('required', '');  
+                preSharedKeyInput.setAttribute('required', '');  
+                espProposalInput.setAttribute('required', '');  
+            } else {
+                addSection.style.display = 'none';
+                deleteSection.style.display = 'block';
+                deleteInput.setAttribute('required', '');  // Set required for delete section
+                addVpnNameInput.removeAttribute('required');  // Remove required from add section
+                localIpInput.removeAttribute('required');  
+                localSubnetInput.removeAttribute('required');  
+                remoteIpInput.removeAttribute('required');  
+                remoteSubnetInput.removeAttribute('required');  
+                authMethodInput.removeAttribute('required');  
+                preSharedKeyInput.removeAttribute('required');  
+                espProposalInput.removeAttribute('required');  
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="row">
+            <div class="logo-row">
+                <img src="{{ url_for('static', filename='images/cloudLogo.png') }}" alt="logo" class="logo">
+            </div>
+        </div>
+    </header>
+
+    <h2 style="text-align: center;">Site-to-Site VPN</h2>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <script>
+        alert("{{ messages[0] }}");
+    </script>
+    {% endif %}
+    {% endwith %}
+
+    <form action="/submit-vpn" method="post">
+
+        <div class="form-section">
+            <label>
+                <input type="radio" name="action" value="add" onclick="toggleForm('add')" checked>
+                Add VPN
+            </label>
+            <label>
+                <input type="radio" name="action" value="delete" onclick="toggleForm('delete')">
+                Delete VPN
+            </label>
+        </div>
+
+        <div id="add-section">
+            <h3>Add VPN Configuration</h3>
+            <div class="form-section">
+                <label for="vpn_name">VPN Name:</label>
+                <input type="text" id="vpn_name" name="vpn_name" required>
+            </div>
+            <div class="form-section">
+                <label for="local_ip">Local IP:</label>
+                <input type="text" id="local_ip" name="local_ip" required>
+            </div>
+            <div class="form-section">
+                <label for="local_subnet">Local Subnet:</label>
+                <input type="text" id="local_subnet" name="local_subnet" required>
+            </div>
+            <div class="form-section">
+                <label for="remote_ip">Remote IP:</label>
+                <input type="text" id="remote_ip" name="remote_ip" required>
+            </div>
+            <div class="form-section">
+                <label for="remote_subnet">Remote Subnet:</label>
+                <input type="text" id="remote_subnet" name="remote_subnet" required>
+            </div>
+            <div class="form-section">
+                <label for="auth_method">Authentication Method:</label>
+                <input type="text" id="auth_method" name="auth_method" required>
+            </div>
+            <div class="form-section">
+                <label for="pre_shared_key">Pre-Shared Key:</label>
+                <input type="text" id="pre_shared_key" name="pre_shared_key" required>
+            </div>
+            <div class="form-section">
+                <label for="esp_proposal">ESP Proposal:</label>
+                <input type="text" id="esp_proposal" name="esp_proposal" required>
+            </div>
+        </div>
+
+        <div id="delete-section" style="display: none;">
+            <h3>Delete VPN Configuration</h3>
+            <div class="form-section">
+                <label for="delete_vpn_name">VPN Name:</label>
+                <input type="text" id="delete_vpn_name" name="delete_vpn_name" required>
+            </div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Initialize the form state
+        toggleForm('add');
+    </script>
+</body>
+</html>
