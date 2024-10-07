@@ -120,9 +120,12 @@ def vpn_handler(action, data):
         config_context = template.render(json_data)
         data = json.loads(config_context.replace("\'","\""))
         print(data)
+        headers = {
+           "Content-Type": "application/yang-data+json"
+        }
         
         # os.system(f"curl -k -X PATCH {config_content}")
-        response = requests.patch(api_url, json=data, verify=False)
+        response = requests.patch(api_url, headers=headers, json=data, verify=False)
 
     else:
         # os.system(f"curl -k -X DELETE {config_content}")
@@ -130,6 +133,9 @@ def vpn_handler(action, data):
         print(api_url)
         response = requests.delete(api_url, verify=False)
 
-    print(response.json())
-    
-    
+    print("Response code :", response.status_code)
+    if response.status_code == 200 :
+        try:
+            json_response = response.json()
+        except json.JSONDecodeError as e:
+            print("Failed to decode JSON", e)
